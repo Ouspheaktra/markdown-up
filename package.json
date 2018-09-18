@@ -4,7 +4,7 @@
   "description": "Markdown Up to HTML/React",
   "private": false,
   "scripts": {
-    "build": "npx babel lib -d dist --presets=es2015,react",
+    "build": "npx babel src -d dist --presets=es2015,react",
     "test": "jest test",
     "test:react": "npm run build -- -w | npx babel -w ./test/renderer/react/app.js -o ./test/renderer/react/_app.js --presets=es2015,react | npx webpack --watch --mode development --entry ./test/renderer/react/_app.js --output ./test/renderer/react/_bundle.js",
     "test:html": "npm run build -- -w | npx babel -w ./test/renderer/html/index.js -o ./test/renderer/html/_index.js --presets=es2015 | npx webpack --watch --mode development --entry ./test/renderer/html/_index.js --output ./test/renderer/html/_bundle.js"
