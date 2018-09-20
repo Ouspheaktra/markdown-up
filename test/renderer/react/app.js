@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import MarkdownUp  from "../../../dist/markdown-up";
+import MarkdownUp from "../../../dist/markdown-up";
 
 const mdu = new MarkdownUp("react");
 
@@ -10,13 +10,12 @@ function readTextFile(file, success) {
     reader.readAsText(file);
 }
 
-class HelloMessage extends React.Component {
+class App extends React.Component {
     constructor(props) {
         super(props);
         this.file = React.createRef();
         this.state = {
-            output: "NONE",
-            lalal: 123
+            output: "NONE"
         }
     }
     selectFile(e) {
@@ -29,12 +28,10 @@ class HelloMessage extends React.Component {
     render() {
         return <div>
             <input type="file" id="file" onChange={this.selectFile.bind(this)} />
-            <div>
-                {this.state.output}
-            </div>
+            {React.createElement('div', null, ...this.state.output)}
         </div>;
     }
 }
 
 var mountNode = document.getElementById("app");
-ReactDOM.render(<HelloMessage />, mountNode);
+ReactDOM.render(<App />, mountNode);

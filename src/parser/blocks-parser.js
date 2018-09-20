@@ -1,7 +1,7 @@
-import OrderedObject from './ordered-object';
+import OrderedObject from '../ordered-object';
 import Common from './common';
 import { Parsers, Parser } from './parser';
-import { lastItem } from './helpers';
+import { lastItem } from '../helpers';
 
 let builtin = new OrderedObject();
 

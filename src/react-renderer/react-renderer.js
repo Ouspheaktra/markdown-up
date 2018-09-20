@@ -1,4 +1,5 @@
 const React = require('react');
+const { gatherText } = require('./helper');
 
 let builtin;
 
@@ -7,7 +8,7 @@ export default class ReactRenderer {
         this.renderers = builtin;
     }
     render(tokens, isChildren = false) {
-        let all = tokens.map(token => {
+        return tokens.map(token => {
             let el;
             let children = [];
             if (token.children && token.children.length)
@@ -25,25 +26,7 @@ export default class ReactRenderer {
             }
             return el;
         })
-        if (isChildren === true)
-            return all;
-        let ref = React.createRef()
-        let el = React.createElement("div", { ref: ref }, ...all);
-        return el;
     }
-}
-
-export const gatherText = (children) => {
-    let text = "";
-    if (children.constructor !== Array)
-        children = [children];
-    children.forEach(child => {
-        if (typeof child === "string")
-            text += child;
-        else
-            text += gatherText(child.props.children);
-    })
-    return text;
 }
 
 const hN = (token, children) => {

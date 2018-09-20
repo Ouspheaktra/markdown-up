@@ -1,7 +1,7 @@
-import OrderedObject from './ordered-object';
+import OrderedObject from '../ordered-object';
 
 export class Parsers {
-    constructor(specialChar, data) {
+    constructor(specialChar=[], data={}) {
         this.specialChar = specialChar;
         this.parsers = this.constructor.builtin.clone();
         this._parsersIns = new OrderedObject();
