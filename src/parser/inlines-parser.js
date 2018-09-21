@@ -11,29 +11,25 @@ let builtin = new OrderedObject();
 export class InlinesParser extends Parsers {
     constructor(...args) {
         super(...args);
-        this._textParser = new Text(this);
+        this._defaultParser = Text;
     }
     _postParse(match, text, token) {
         let toInsert = [];
-        if (token.tag === "text") {
-            toInsert.push(token);
-        } else {
-            if (token.text) {
-                token.children = this.text(token.text);
-                delete token.text;
-            }
-            // prepare token
-            if (token.children && token.children.constructor !== Array)
-                token.children = [token.children];
-            // prepare what to insert into children
-            let start = text.substr(0, match.index);
-            let end = text.substr(match.index + match[0].length);
-            if (start !== "")
-                toInsert.push(start);
-            toInsert.push(token);
-            if (end !== "")
-                toInsert.push(end);
+        if (token.tag !== "text" && token.text) {
+            token.children = this._parsersIns.valueOf("default").parse([token.text]);
+            delete token.text;
         }
+        // prepare token
+        if (token.children && token.children.constructor !== Array)
+            token.children = [token.children];
+        // prepare what to insert into children
+        let start = text.substr(0, match.index);
+        let end = text.substr(match.index + match[0].length);
+        if (start !== "")
+            toInsert.push(start);
+        toInsert.push(token);
+        if (end !== "")
+            toInsert.push(end);
         return toInsert;
     }
     /**
@@ -46,9 +42,9 @@ export class InlinesParser extends Parsers {
         for (let i = 0; i < tokens.length; i++) {
             text = tokens[i];
             // if it is Object
-            // it means it's tokenized            
+            // it means it's tokenized
             if (text.constructor === Object) {
-                if (text.tag !== "text" && text.children)
+                if (text.children)
                     this.parse(text.children);
                 continue;
             }
@@ -57,10 +53,6 @@ export class InlinesParser extends Parsers {
                 // eslint-disable-next-line
                 if (match = parser.test(text))
                     break;
-            // if all test failed, use text parser
-            if (!match)
-                parser = this._textParser;
-
             token = parser.parse(match, text);
             toInsert = this._postParse(match, text, token);
             // insert parts into children
@@ -86,7 +78,7 @@ InlinesParser.builtin = builtin;
 export class InlineParser extends Parser {
     constructor(...args) {
         super(...args);
-        this.text = text => this.mainParser._textParser.parse(null, text);
+        this.text = text => this.mainParser._parsersIns.valueOf("default").parse([text]);
     }
     /**
      * Override this method to test
@@ -113,11 +105,12 @@ export class InlineParser extends Parser {
 /// BUILTIN ///
 
 class Text extends InlineParser {
-    parse(match, text) {
+    test = (text) => ({ 0: text, index: 0 })
+    parse(match) {
         const chars = removeDuplicate(this.mainParser.specialChar).map(char => `\\${char}`).join("");
         return {
             tag: 'text',
-            text: text.replace(RegExp(`\\\\([${chars}])`), '$1')
+            text: match[0].replace(RegExp(`\\\\([${chars}])`), '$1')
         }
     }
 }
@@ -175,7 +168,7 @@ class InlineCode extends InlineParser {
     parse(match) {
         return {
             tag: 'code',
-            children: this.text(match[1])
+            text: match[1]
         };
     }
 }
@@ -249,7 +242,7 @@ class AutoLink extends InlineParser {
         return {
             tag: 'a',
             href: match[1],
-            children: this.text(match[1])
+            text: match[1]
         };
     }
 }

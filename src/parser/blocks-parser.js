@@ -11,8 +11,8 @@ let builtin = new OrderedObject();
 export class BlocksParser extends Parsers {
     constructor(...args) {
         super(...args);
-        this._paragraphParser = new Paragraph(this);
-        this._emptyParser = new Empty(this);
+        this._defaultParser = Paragraph;
+        this._emptyParserIns = new Empty(this);
     }
     /**
      * Prepare Each Token and Tokenize children
@@ -46,16 +46,13 @@ export class BlocksParser extends Parsers {
         while (lines.length) {
             prevToken = lastItem(tokens);
             if (lines[0].trim() === "")
-                parser = this._emptyParser;
+                parser = this._emptyParserIns;
             else {
                 // test each parser
                 for (parser of this._parsersIns.values())
                     // eslint-disable-next-line
                     if (match = parser.test(lines))
                         break;
-                // if no parser is successfully tested, use paragraph parser
-                if (!match)
-                    parser = this._paragraphParser;
             }
             // do the tokenize job
             token =
@@ -102,6 +99,7 @@ export class BlockParser extends Parser {
 /// BUILTIN ///
 
 class Paragraph extends BlockParser {
+    test = () => true;
     parse(lines, match, prevToken) {
         if (prevToken && prevToken.tag === "p") {
             let children = prevToken.children;
@@ -334,7 +332,7 @@ class Reference extends BlockParser {
         return { tag: "empty" };
     }
 }
-Reference.regex = `^\\[(.+?)\\]: *${Common.link}`;
+Reference.regex = `^\\[(.+?)\\]: *${Common.link}$`;
 builtin.add("reference", Reference);
 
 class Table extends BlockParser {
