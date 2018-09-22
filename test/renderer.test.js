@@ -1,8 +1,8 @@
 const fs = require('fs-extra');
-const MarkdownUp = require('../src/markdown-up').default;
+const { MarkdownUpHTML, MarkdownUpReact } = require('../index');
 
 describe('html renderer', () => {
-    const mdu = new MarkdownUp('html');
+    const mdu = new MarkdownUpHTML();
     test('no error', done =>
         fs.readFile(__dirname + '/text.md', "utf8")
             .then(md => {
@@ -13,7 +13,7 @@ describe('html renderer', () => {
 })
 
 describe('react renderer', () => {
-    const mdu = new MarkdownUp('react');
+    const mdu = new MarkdownUpReact();
     test('no error', done =>
         fs.readFile(__dirname + '/text.md', "utf8")
             .then(md => {

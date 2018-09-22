@@ -1,4 +1,4 @@
-import MarkdownUp from '../../../dist/markdown-up';
+import { MarkdownUpHTML as MarkdownUp } from '../../index';
 
 function readTextFile(file, success) {
     var reader = new FileReader();

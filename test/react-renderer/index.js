@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import MarkdownUp from "../../../dist/markdown-up";
+import { MarkdownUpReact as MarkdownUp } from "../../index";
 
-const mdu = new MarkdownUp("react");
+const mdu = new MarkdownUp();
 
 function readTextFile(file, success) {
     var reader = new FileReader();
