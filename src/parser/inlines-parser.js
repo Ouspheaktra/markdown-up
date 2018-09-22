@@ -38,7 +38,7 @@ export class InlinesParser extends Parsers {
      */
     parse(tokens) {
         this._preParse();
-        let parser, match, toInsert, text, token;
+        let parser, toInsert, text, token;
         for (let i = 0; i < tokens.length; i++) {
             text = tokens[i];
             // if it is Object
@@ -48,13 +48,10 @@ export class InlinesParser extends Parsers {
                     this.parse(text.children);
                 continue;
             }
-            // loop to test each parser
-            for (parser of this._parsersIns.values())
-                // eslint-disable-next-line
-                if (match = parser.test(text))
-                    break;
-            token = parser.parse(match, text);
-            toInsert = this._postParse(match, text, token);
+            // find parser
+            parser = this.findParser(text);
+            token = parser.parser.parse(parser.match, text);
+            toInsert = this._postParse(parser.match, text, token);
             // insert parts into children
             tokens.splice(i, 1, ...toInsert);
             // if first one is string

@@ -12,7 +12,6 @@ export class BlocksParser extends Parsers {
     constructor(...args) {
         super(...args);
         this._defaultParser = Paragraph;
-        this._emptyParserIns = new Empty(this);
     }
     /**
      * Prepare Each Token and Tokenize children
@@ -24,6 +23,15 @@ export class BlocksParser extends Parsers {
                 token.children = [token.children]
             token.children = token.children.map(children => this._postParse(children), this);
         }
+        return token;
+    }
+    parseOne(lines) {
+        let token = false;
+        let { parser, match } = this.findParser(lines);
+        // do the tokenize job
+        token =
+            this._postParse(
+                parser.parse(lines, match));
         return token;
     }
     /**
@@ -42,26 +50,12 @@ export class BlocksParser extends Parsers {
                 .replace(/\u2424/g, '\n')
                 .split('\n');
         // loop until no line left
-        let parser, match, token, prevToken, tokens = [];
+        let token, tokens = [];
         while (lines.length) {
-            prevToken = lastItem(tokens);
-            if (lines[0].trim() === "")
-                parser = this._emptyParserIns;
-            else {
-                // test each parser
-                for (parser of this._parsersIns.values())
-                    // eslint-disable-next-line
-                    if (match = parser.test(lines))
-                        break;
-            }
-            // do the tokenize job
-            token =
-                this._postParse(
-                    parser.parse(lines, match, prevToken));
+            token = this.parseOne(lines);
             if (token !== false)
                 tokens.push(token);
         }
-        tokens.data = this.data;
         return tokens;
     }
 }
@@ -78,20 +72,15 @@ export class BlockParser extends Parser {
      * @return - anything is true, call parse() and put it as second param
      */
     test(lines) {
-        try {
-            return RegExp(this.constructor.regex).exec(lines[0]);
-        } catch (e) {
-            throw Error("something wrong with this regex: " + this.constructor.regex);
-        }
+        return RegExp(this.constructor.regex).exec(lines[0]);
     }
     /**
      * 
      * @param {string[]} lines 
      * @param {*} match - what return from test()
-     * @param {*} prevToken - previous token
-     * @return - { tag: string } or prevToken
+     * @return - { tag: string } or false
      */
-    parse(lines, match, prevToken) {
+    parse(lines, match) {
         throw new Error("override this method");
     }
 }
@@ -100,31 +89,22 @@ export class BlockParser extends Parser {
 
 class Paragraph extends BlockParser {
     test = () => true;
-    parse(lines, match, prevToken) {
-        if (prevToken && prevToken.tag === "p") {
-            let children = prevToken.children;
-            if (lastItem(children).endsWith("  ")) {
-                children[children.length - 1] = lastItem(children).trim();
-                children.push("\n");
-            } else
+    parse(lines) {
+        let children = [lines.shift()];
+        let parser;
+        while (lines.length && ({ parser } = this.findParser(lines)) && parser.constructor === this.constructor)
+            if (lines[0].endsWith("  "))
+                children.push('\n', lines.shift());
+            else
                 children.push(` ${lines.shift()}`);
-            return false;
-        }
         return {
             tag: "p",
-            children: lines.shift()
+            children
         };
     }
 }
 
-class Empty extends BlockParser {
-    parse(lines) {
-        lines.shift();
-        return {
-            tag: 'empty'
-        }
-    }
-}
+
 
 class Heading extends BlockParser {
     parse(lines, match) {
@@ -302,7 +282,7 @@ IndentCode.regex = /^ {4}(.*)/;
 builtin.add("indent_code", IndentCode);
 
 class BlockQuote extends BlockParser {
-    parse(lines, match, prevToken) {
+    parse(lines, match) {
         let all = [];
         do {
             lines.shift();
@@ -329,7 +309,7 @@ class Reference extends BlockParser {
             href: match[2],
             title: match[3]
         }
-        return { tag: "empty" };
+        return this.empty;
     }
 }
 Reference.regex = `^\\[(.+?)\\]: *${Common.link}$`;
