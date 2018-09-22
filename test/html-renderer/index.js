@@ -1,4 +1,4 @@
-import { MarkdownUpHTML as MarkdownUp } from '../../index';
+import { MarkdownUp, HTMLRenderer } from '../../index';
 
 function readTextFile(file, success) {
     var reader = new FileReader();
@@ -6,7 +6,7 @@ function readTextFile(file, success) {
     reader.readAsText(file);
 }
 
-const mdu = new MarkdownUp();
+const mdu = new MarkdownUp(HTMLRenderer);
 
 document.getElementById("file").onchange = (e) => {
     readTextFile(e.target.files[0], md => {
