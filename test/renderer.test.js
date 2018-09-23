@@ -1,5 +1,5 @@
 const fs = require('fs-extra');
-const { MarkdownUp, HTMLRenderer, ReactRenderer } = require('../index');
+const { MarkdownUp, HTMLRenderer, ReactRenderer } = require('../src');
 
 describe('html renderer', () => {
     const mdu = new MarkdownUp(HTMLRenderer);

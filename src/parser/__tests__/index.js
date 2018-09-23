@@ -1,5 +1,5 @@
 describe('block parser', () => {
-    const { BlocksParser } = require('../src/parser/blocks-parser');
+    const { BlocksParser } = require('../blocks-parser');
     const parser = new BlocksParser();
 
     test('heading', () => {
@@ -35,7 +35,7 @@ describe('block parser', () => {
 
 
 describe('inline parser', () => {
-    const { InlinesParser } = require('../src/parser/inlines-parser');
+    const { InlinesParser } = require('../inlines-parser');
     const parser = new InlinesParser();
 
     test('em in strong', () => {

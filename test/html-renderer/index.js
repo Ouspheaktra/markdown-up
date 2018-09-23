@@ -1,4 +1,4 @@
-import { MarkdownUp, HTMLRenderer } from '../../index';
+import { MarkdownUp, HTMLRenderer } from '../../src/index';
 
 function readTextFile(file, success) {
     var reader = new FileReader();

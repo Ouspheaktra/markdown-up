@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { MarkdownUp, ReactRenderer } from "../../index";
+import { MarkdownUp, ReactRenderer } from "../../src/index";
 
 const mdu = new MarkdownUp(ReactRenderer);
 

@@ -1,6 +1,6 @@
 import OrderedObject from '../ordered-object';
 import Common from './common';
-import { Parsers, Parser } from './parser';
+import { Parsers, Parser } from './index';
 import { removeDuplicate } from "../helpers";
 
 let builtin = new OrderedObject();
