@@ -201,10 +201,10 @@ Image.specialChar = "!";
 class LinkRef extends InlineParser {
     parse(match) {
         let text = match[1];
-        let refName = match[2];
-        if (!refName) refName = text;
+        let refName = match[2] || text;
         if (this.data.ref[refName]) {
             let data = this.data.ref[refName];
+            if (text === refName) text = data.title;
             let out = {
                 tag: this.constructor.tag,
                 alt: text,

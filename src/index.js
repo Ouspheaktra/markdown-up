@@ -1,9 +1,7 @@
-import { BlocksParser } from './parser/blocks-parser';
-import { InlinesParser } from './parser/inlines-parser';
 import HTMLRenderer from './html-renderer';
 import ReactRenderer from './react-renderer';
-import { BlockParser } from './parser/blocks-parser';
-import { InlineParser } from './parser/inlines-parser';
+import { BlocksParser, BlockParser } from './parser/blocks-parser';
+import { InlinesParser, InlineParser } from './parser/inlines-parser';
 import { removeDuplicate, lastItem } from './helpers';
 import { gatherText } from './react-renderer/helper';
 
@@ -14,6 +12,9 @@ export default class MarkdownUp {
         this.blocksParser = new BlocksParser(this.specialChar, this.data);
         this.inlinesParser = new InlinesParser(this.specialChar, this.data);
         this.renderer = new renderer();
+        this.blockParsers = this.blocksParser.parsers;
+        this.inlineParsers = this.inlinesParser.parsers;
+        this.renderers = this.renderer.renderers;
     }
     parse(src) {
         let tokens = this.blocksParser.parse(src);
@@ -28,6 +29,8 @@ export default class MarkdownUp {
 }
 
 export {
+    BlocksParser,
+    InlinesParser,
     BlockParser,
     InlineParser,
     gatherText,
