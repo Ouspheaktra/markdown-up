@@ -203,8 +203,7 @@ class LinkRef extends InlineParser {
         let text = match[1];
         let refName = match[2];
         if (!refName) refName = text;
-        refName = refName.toLowerCase();
-        if (this.data.ref && refName in this.data.ref) {
+        if (this.data.ref[refName]) {
             let data = this.data.ref[refName];
             let out = {
                 tag: this.constructor.tag,

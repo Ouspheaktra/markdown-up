@@ -8,6 +8,8 @@ export class Parsers {
         this._emptyParser = Empty;
         this._parsersIns = new OrderedObject();
         this.data = data;
+        if (!data.ref)
+            data.ref = {};
     }
     _preParse() {
         if (JSON.stringify(["empty", ...this.parsers.keys(), "default"]) === JSON.stringify(this._parsersIns.keys()))

@@ -300,12 +300,7 @@ builtin.add("blockquote", BlockQuote);
 class Reference extends BlockParser {
     parse(lines, match) {
         lines.shift();
-        if (!this.data.ref)
-            this.data.ref = {};
-        const refName = match[1].toLowerCase();
-        if (refName in this.data.ref)
-            console.warn(`duplicate "${match[1]}" reference`);
-        this.data.ref[refName] = {
+        this.data.ref[match[1]] = {
             href: match[2],
             title: match[3]
         }
