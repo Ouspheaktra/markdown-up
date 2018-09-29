@@ -2,14 +2,16 @@ import React from 'react';
 
 export const gatherText = (children) => {
     let text = "";
-    if (children.constructor !== Array)
-        children = [children];
-    children.forEach(child => {
-        if (typeof child === "string")
-            text += child;
-        else
-            text += gatherText(child.props.children);
-    })
+    if (children) {
+        if (children.constructor !== Array)
+            children = [children];
+        children.forEach(child => {
+            if (child.tag === "text")
+                text += child.text;
+            else
+                text += gatherText(child.children);
+        })
+    }
     return text;
 }
 
