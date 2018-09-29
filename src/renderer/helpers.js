@@ -15,9 +15,9 @@ export const gatherText = (children) => {
     return text;
 }
 
-export const createElement = (tag) => (token, children, data) => {
+export const createElement = (tag) => (token, { renderChildren, data }) => {
     let props = { ...token, data };
     delete props.children;
     delete props.tag;
-    return React.createElement(tag, props, ...children);
+    return React.createElement(tag, props, ...renderChildren(token));
 }
