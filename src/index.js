@@ -16,17 +16,15 @@ export default class MarkdownUp {
         this.inlineParsers = this.inlinesParser.parsers;
         this.renderers = this.renderer.renderers;
     }
-    parse(src) {
+    parse(src, data={}) {
 		mainHelpers.clearObject(this.data);
+		Object.assign(this.data, data);
 		this.data.ref = {};
         let tokens = this.blocksParser.parse(src);
         return this.inlinesParser.parse(tokens);
     }
-    render(src) {
-        if (src.constructor === String)
-            return this.renderer.render(this.parse(src));
-        else
-            return this.renderer.render(src);
+    render(src, data) {
+        return this.renderer.render(this.parse(src, data));
     }
 }
 
