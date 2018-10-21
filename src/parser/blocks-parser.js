@@ -26,13 +26,10 @@ export class BlocksParser extends Parsers {
         return token;
     }
     parseOne(lines) {
-        let token = false;
         let { parser, match } = this.findParser(lines);
-        // do the tokenize job
-        token =
-            this._postParse(
-                parser.parse(lines, match));
-        return token;
+        return this._postParse(
+            parser.parse(lines, match)
+        );
     }
     /**
      * 
@@ -50,12 +47,9 @@ export class BlocksParser extends Parsers {
                 .replace(/\u2424/g, '\n')
                 .split('\n');
         // loop until no line left
-        let token, tokens = [];
-        while (lines.length) {
-            token = this.parseOne(lines);
-            if (token !== false)
-                tokens.push(token);
-        }
+        let tokens = [];
+        while (lines.length)
+            tokens.push(this.parseOne(lines));
         return tokens;
     }
 }
@@ -92,7 +86,10 @@ class Paragraph extends BlockParser {
     parse(lines) {
         let children = [lines.shift()];
         let parser;
-        while (lines.length && ({ parser } = this.findParser(lines)) && parser.constructor === this.constructor)
+        while (
+            (lines.length) &&
+            (this.findParser(lines).constructor === this.constructor)
+        )
             if (lines[0].endsWith("  "))
                 children.push('\n', lines.shift());
             else
@@ -361,11 +358,13 @@ class Table extends BlockParser {
         })
         let data = [];
         let matches;
-        while (lines.length && (matches = this._addVerticalLine(lines[0]).match(this.dataRegex)) && matches.length === length) {
-            lines.shift();
-            matches = matches.map(one => one.substr(1).trim()).slice(0, heads.length);
-            data.push(matches);
-        }
+        while (
+            (lines.length) &&
+            (matches = this._addVerticalLine(lines[0]).match(this.dataRegex)) &&
+            (matches.length === length) &&
+            (lines.shift() || true)
+        )
+            data.push(matches.map(one => one.substr(1).trim()).slice(0, heads.length));
         return {
             tag: "table",
             children: [

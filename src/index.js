@@ -2,7 +2,7 @@ import HTMLRenderer from './renderer/html';
 import ReactRenderer from './renderer/react';
 import { BlocksParser, BlockParser } from './parser/blocks-parser';
 import { InlinesParser, InlineParser } from './parser/inlines-parser';
-import * as mainHelpers from './helpers';
+import * as helpers from './helpers';
 import * as rendererHelpers from './renderer/helpers';
 
 export default class MarkdownUp {
@@ -16,19 +16,24 @@ export default class MarkdownUp {
         this.inlineParsers = this.inlinesParser.parsers;
         this.renderers = this.renderer.renderers;
     }
-    parse(src, data={}) {
-		mainHelpers.clearObject(this.data);
-		Object.assign(this.data, data);
-		this.data.ref = {};
-        let tokens = this.blocksParser.parse(src);
-        return this.inlinesParser.parse(tokens);
+    parse(src, data = {}) {
+        helpers.clearObject(this.data);
+        Object.assign(this.data, data);
+        this.data.ref = {};
+        return this.inlinesParser.parse(
+            this.blocksParser.parse(src)
+        );
     }
-    render(src, data) {
-        return this.renderer.render(this.parse(src, data));
+    render(src, data = {}) {
+        return this.renderer.render(
+            (typeof src === "string")
+                ? this.parse(src, data)
+                : src
+        )
     }
 }
 
-const helpers = { ...mainHelpers, ...rendererHelpers };
+Object.assign(helpers, rendererHelpers);
 
 export {
     BlocksParser,
