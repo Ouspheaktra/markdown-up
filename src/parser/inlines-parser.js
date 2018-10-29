@@ -1,7 +1,7 @@
 import OrderedObject from '../ordered-object';
 import Common from './common';
 import { Parsers, Parser } from './index';
-import { removeDuplicate } from "../helpers";
+import { removeDuplicate, regexToString } from "../helpers";
 
 let builtin = new OrderedObject();
 
@@ -189,13 +189,13 @@ class Link extends InlineParser {
 }
 Link.tag = 'a';
 Link.href = 'href';
-Link.regex = `(?<!\\\\)\\[(.+?)\\]\\(${Common.link}\\)`;
+Link.regex = RegExp(`(?<!\\\\)\\[(.+?)\\]\\(${Common.link}\\)`);
 Link.specialChar = "[";
 
 class Image extends Link { }
 Image.tag = 'img';
 Image.href = 'src';
-Image.regex = `(?<!\\\\)!${Link.regex}`;
+Image.regex = RegExp(`(?<!\\\\)!${regexToString(Link.regex)}`);
 Image.specialChar = "!";
 
 class LinkRef extends InlineParser {
@@ -220,12 +220,12 @@ class LinkRef extends InlineParser {
 }
 LinkRef.tag = Link.tag;
 LinkRef.href = Link.href;
-LinkRef.regex = '(?<!\\\\)\\[(.+?)\\](?:\\[(.+?)\\])?';
+LinkRef.regex = RegExp('(?<!\\\\)\\[(.+?)\\](?:\\[(.+?)\\])?');
 
 class ImageRef extends LinkRef { }
 ImageRef.tag = Image.tag;
 ImageRef.href = Image.href;
-ImageRef.regex = `!${LinkRef.regex}`;
+ImageRef.regex = RegExp(`!${regexToString(LinkRef.regex)}`);
 
 builtin.add("image", Image);
 builtin.add("link", Link);
@@ -242,10 +242,10 @@ class AutoLink extends InlineParser {
         };
     }
 }
-AutoLink.regex = '\\b(https?:\\/{2}\\S+)\\b';
+AutoLink.regex = RegExp('\\b(https?:\\/{2}\\S+)\\b');
 
 class SurroundedAutoLink extends AutoLink { }
-SurroundedAutoLink.regex = `(?<!\\\\)<${AutoLink.regex}>`;
+SurroundedAutoLink.regex = RegExp(`(?<!\\\\)<${regexToString(AutoLink.regex)}>`);
 SurroundedAutoLink.specialChar = "<";
 
 builtin.add("surrounded_auto_link", SurroundedAutoLink);
