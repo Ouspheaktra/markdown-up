@@ -464,18 +464,18 @@ function (_BlockParser5) {
 List.regex = /^(\s*)([-*+]|\d+\.) (.*)/;
 builtin.add("li", List);
 
-var FenceCode =
+var BlockCode =
 /*#__PURE__*/
 function (_BlockParser6) {
-  _inherits(FenceCode, _BlockParser6);
+  _inherits(BlockCode, _BlockParser6);
 
-  function FenceCode() {
-    _classCallCheck(this, FenceCode);
+  function BlockCode() {
+    _classCallCheck(this, BlockCode);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(FenceCode).apply(this, arguments));
+    return _possibleConstructorReturn(this, _getPrototypeOf(BlockCode).apply(this, arguments));
   }
 
-  _createClass(FenceCode, [{
+  _createClass(BlockCode, [{
     key: "parse",
     value: function parse(lines, match) {
       lines.shift();
@@ -496,11 +496,11 @@ function (_BlockParser6) {
     }
   }]);
 
-  return FenceCode;
+  return BlockCode;
 }(BlockParser);
 
-FenceCode.regex = /^``` *(.*)/;
-builtin.add("fence_code", FenceCode);
+BlockCode.regex = /^``` *(.*)/;
+builtin.add("block_code", BlockCode);
 
 var IndentCode =
 /*#__PURE__*/

@@ -240,7 +240,7 @@ class List extends BlockParser {
 List.regex = /^(\s*)([-*+]|\d+\.) (.*)/;
 builtin.add("li", List);
 
-class FenceCode extends BlockParser {
+class BlockCode extends BlockParser {
     parse(lines, match) {
         lines.shift();
         let codes = [];
@@ -259,8 +259,8 @@ class FenceCode extends BlockParser {
         }
     }
 }
-FenceCode.regex = /^``` *(.*)/;
-builtin.add("fence_code", FenceCode);
+BlockCode.regex = /^``` *(.*)/;
+builtin.add("block_code", BlockCode);
 
 class IndentCode extends BlockParser {
     parse(lines, match) {
